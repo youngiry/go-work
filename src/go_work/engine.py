@@ -326,6 +326,13 @@ def handle(store, event, now=None):
                 state['events'] = state['events'][-100:]
         output['status'] = state['status']
         write(path, state)
+        # Narrow the handoff window. The host must still reject continuation
+        # if its turn is cancelled after this process returns.
+        signal = cancelled(path)
+        if signal:
+            state.update(signal)
+            write(path, state)
+            return {'action': 'allow', 'status': state['status']}
         return output
 
 

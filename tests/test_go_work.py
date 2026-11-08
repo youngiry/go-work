@@ -7,6 +7,7 @@ import tempfile
 import threading
 import time
 import unittest
+from unittest.mock import patch
 from go_work import adapters, engine
 from go_work.cli import hook_config
 
@@ -230,6 +231,17 @@ class GuardTests(unittest.TestCase):
         stored = engine.state_path(self.store, 'one').read_text()
         self.assertNotIn('PRIVATE_RESPONSE_EXAMPLE', stored)
         self.assertIn('last_signature', stored)
+
+    def test_late_interrupt_before_response_wins(self):
+        self.arm()
+        original = engine.classify
+        def interrupt_then_classify(*args):
+            self.stop(event='interrupt')
+            return original(*args)
+        with patch.object(engine, 'classify', side_effect=interrupt_then_classify):
+            result = self.stop()
+        self.assertEqual('paused_by_user', result['status'])
+        self.assertNotEqual('continue', result['action'])
 
     def test_invalid_encoding_is_unmet_check(self):
         self.arm()

@@ -36,7 +36,7 @@ flowchart LR
     D -->|Gaps, budget available| F[Return concrete remaining work]
     F --> B
     D -->|Stall or budget limit| G[Hand control back]
-    U[User interrupt or new instruction] --> G
+    U[Host forwards interrupt or new instruction] --> G
 ```
 
 - **File checks:** existence, minimum size, required text, changes against the arm-time fingerprint.
@@ -109,7 +109,7 @@ The contract is established before work and its baseline is stored locally. Go W
 
 The host owns process cancellation, permissions, tool execution and transport failures. Go Work requests continuation only at a supported normal-stop event. It never bypasses approvals, changes models, or restarts crashed agents. User messages pause the old contract when the adapter receives explicit input provenance; the assistant re-arms after applying the correction. Qwen and DeepSeek have partial input/cancellation coverage, detailed in the integration guide.
 
-Default limits: **6 continuations, 3 consecutive no-progress stops, 90 minutes**. The time limit is checked at stop boundaries rather than acting as a watchdog for a running tool. Validator timeout controls the direct child process; validators should avoid spawning background jobs.
+Default limits: **6 continuations, 3 consecutive no-progress stops, 90 minutes**. The time limit is checked at stop boundaries rather than acting as a watchdog for a running tool. Validator timeout and cancellation control the direct child process; validators should avoid spawning background jobs or manage their own descendant cleanup. Cancellation is checked during verification and before returning; the host must discard continuation if the user cancels after that handoff.
 
 ## Development
 

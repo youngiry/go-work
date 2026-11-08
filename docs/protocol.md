@@ -49,7 +49,7 @@ On a stop, optional `mode:"plan"` pauses enforcement. Empty messages are support
 - `allow`: release the gate. Inspect `status`; only `checks_passed` reports successful acceptance. `unregistered` and `error` are also allow outcomes.
 - `pause`: budget/stall limit reached; return control to the user with remaining check results.
 
-Never translate every `allow` into task success. The host must honor interrupted/failed states before applying any continuation. A custom host should send `interrupt` or `blocked` events and support immediate user cancellation while validators are running.
+Never translate every `allow` into task success. The host must honor interrupted/failed states before applying any continuation, including cancellation between the checker's final signal check and the host consuming its response. A custom host should send `interrupt` or `blocked` events and support immediate user cancellation while validators are running. Validator cancellation terminates the direct process; process-tree cleanup remains the validator/host responsibility.
 
 ## Storage and privacy
 
