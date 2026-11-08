@@ -82,3 +82,10 @@ Required host behavior:
 ## Live smoke test
 
 Use a disposable report task. Arm a file check, let the agent try to stop before creating the file, confirm a real continuation, then create a passing artifact and confirm release. Repeat with a user cancellation and two concurrent sessions. Record host version, adapter, event fields, result and cancellation behavior. Share sanitized results in an issue or pull request; protocol fixtures and live activation should always be reported separately.
+
+
+## Prompt-time enrollment (0.2.1, Codex experimental)
+
+Opt in by creating `~/.go-work/enrollment.json` with `{"roots":["/absolute/workspace"]}`. Matching is exact to the event working directory. Codex UserPromptSubmit then receives enrollment guidance through hookSpecificOutput.additionalContext, including the session ID and installed CLI. Other adapters retain their existing behavior.
+
+The assistant must interpret the request and arm meaningful evidence checks before external work. Chat-only answers, questions and cancellation require no new contract. This is automatic guidance, not guaranteed registration or a semantic quality judge. Unregistered Stop events still allow completion. Protocol tests cover output generation; actual context delivery and model enrollment require a subsequent real user turn. Remove the root from this file to disable guidance.

@@ -6,7 +6,7 @@ from pathlib import Path
 import shlex
 import subprocess
 import sys
-from . import adapters, engine
+from . import adapters, engine, enrollment
 
 
 def hook_config(profile):
@@ -49,8 +49,12 @@ def main():
             payload = json.loads(raw.decode('utf-8-sig'))
             if not isinstance(payload, dict):
                 raise ValueError('Event must be a JSON object')
-            result = engine.handle(args.store, adapters.normalize(args.adapter, payload))
+            event = adapters.normalize(args.adapter, payload)
+            result = engine.handle(args.store, event)
             result = adapters.output(args.adapter, result)
+            context = enrollment.context(args.store, args.adapter, event)
+            if context:
+                result['hookSpecificOutput'] = {'hookEventName': 'UserPromptSubmit', 'additionalContext': context}
         elif args.command == 'arm':
             state = engine.arm(args.store, args.session, engine.read(args.contract))
             result = {'status': state['status'], 'session_id': args.session, 'checks': len(state['checks'])}
