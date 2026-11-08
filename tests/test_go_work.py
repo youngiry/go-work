@@ -102,6 +102,13 @@ class GuardTests(unittest.TestCase):
         result = engine.handle(self.store, self.event, now=1300)
         self.assertEqual('needs_attention', result['status'])
 
+    def test_budget_includes_time_spent_verifying(self):
+        self.contract['limits']['minutes'] = 1
+        self.arm()
+        with patch.object(engine.time, 'monotonic', side_effect=[0, 2]):
+            result = engine.handle(self.store, self.event, now=1059)
+        self.assertEqual('needs_attention', result['status'])
+
     def test_interrupt(self):
         self.arm()
         self.stop(event='interrupt')

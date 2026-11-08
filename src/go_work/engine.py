@@ -242,6 +242,7 @@ def classify(message, previous, has_gap, progressed, tools):
 def handle(store, event, now=None):
     """Normalized events: stop, interrupt, user_prompt, tool, blocked."""
     now = time.time() if now is None else now
+    entered = time.monotonic()
     session = event.get('session_id')
     if not session:
         return {'action': 'allow', 'status': 'unregistered'}
@@ -306,7 +307,7 @@ def handle(store, event, now=None):
                     state['status'] = 'checks_passed'
                 elif (state['continuations'] >= state['limits']['continuations'] or
                       state['stalls'] >= state['limits']['stalls'] or
-                      now - state['started'] >= state['limits']['minutes'] * 60):
+                      now + (time.monotonic() - entered) - state['started'] >= state['limits']['minutes'] * 60):
                     state['status'] = 'needs_attention'
                     output['action'] = 'pause'
                 else:
