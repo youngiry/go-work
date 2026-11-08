@@ -347,8 +347,15 @@ def pause(store, session, reason):
 
 def status(store, session):
     path = state_path(store, session)
+    if not path.exists():
+        registration = state_path(Path(store) / 'registrations', session)
+        if registration.exists():
+            return dict(read(registration), task_status='awaiting_contract')
     state = read(path)
     signal = cancelled(path)
     if signal:
         state.update(signal)
+    registration = state_path(Path(store) / 'registrations', session)
+    if registration.exists():
+        state['registration'] = read(registration)
     return state
