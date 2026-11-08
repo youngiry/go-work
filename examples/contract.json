@@ -1,0 +1,9 @@
+{
+  "root": ".",
+  "objective": "Write a reviewed report containing the findings and sources",
+  "checks": [
+    {"id": "report", "kind": "file", "path": "report.md", "changed": true,
+     "min_bytes": 120, "contains": ["Findings", "Sources"]}
+  ],
+  "limits": {"continuations": 6, "stalls": 3, "minutes": 90}
+}

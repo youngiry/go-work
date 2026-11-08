@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "go-work-guard"
+version = "0.2.0"
+description = "Evidence-based completion gates for AI agents: catch premature completion, empty promises and no-progress loops."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["ai-agents", "codex", "deepseek", "qwen-code", "hooks", "agent-harness", "ralph-loop"]
+classifiers = ["Programming Language :: Python :: 3", "Operating System :: OS Independent", "Development Status :: 3 - Alpha"]
+
+[project.scripts]
+go-work = "go_work.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/youngiry/go-work"
+Issues = "https://github.com/youngiry/go-work/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]

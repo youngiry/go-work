@@ -1,0 +1,24 @@
+name: Bug or false positive
+description: Report a reproducible completion-gate or adapter problem
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Go Work and harness versions
+      placeholder: Go Work 0.2.0, Codex/Qwen/DSH version, OS, Python
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal synthetic reproduction
+      description: Include a sanitized contract and event. Keep private task content and credentials local.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Expected and actual result
+      description: Include action/status/signals, and whether this was a fixture or live agent run.
+    validations:
+      required: true
